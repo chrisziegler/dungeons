@@ -1,0 +1,38 @@
+.container {
+  width: 700px;
+  margin: 20px auto;
+}
+
+.container > button {
+  margin-bottom: 12px;
+  color: chartreuse;
+  background-color: #555;
+  border-radius: 4px;
+}
+.card {
+  background-color: ghostwhite;
+  box-shadow: 0 8px 6px -6px darkgrey;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+}
+
+.card input {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.3em;
+  padding: 4px;
+  margin-bottom: 4px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid silver;
+  width: 96%;
+}
+
+.card label {
+  font-family: sans-serif;
+  font-size: 0.7em;
+  font-weight: bold;
+  color: steelblue;
+  flex: 1;
+}
