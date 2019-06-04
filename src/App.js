@@ -1,60 +1,28 @@
 import React, { Component } from 'react';
 import './index.css';
 import './App.css';
-import Card from './Card';
+import Card from './components/Card';
+import { randomId } from './utils';
+import { initialState } from './constants';
 
 class App extends Component {
   state = {
-    elements: [
-      {
-        id: 1,
-        name: 'Player 1',
-        initiative: 20,
-        hitpoints: 10
-      },
-      {
-        id: 2,
-        name: 'Player 2',
-        initiative: 19,
-        hitpoints: 16
-      },
-      {
-        id: 3,
-        name: 'Player 3',
-        initiative: 18,
-        hitpoints: 20
-      },
-      {
-        id: 4,
-        name: 'Player 4',
-        initiative: 16,
-        hitpoints: 32
-      }
-    ]
-  };
-  updateName = (id, e) => {
-    const { value } = e.target;
-    const elements = this.state.elements;
-    const index = elements.findIndex(el => el.id === id);
-    elements[index].name = value;
-    this.setState({ elements });
+    elements: initialState
   };
 
-  updateHitpoints = (id, e) => {
+  // added a field parameter to reuse method for updateName, updateHitpoints, and updateInitiative
+  updateField = (id, e, field) => {
     const { value } = e.target;
     const elements = this.state.elements;
     const index = elements.findIndex(el => el.id === id);
-    elements[index].hitpoints = Number(value);
+    elements[index][field] = value;
     this.setState({ elements });
   };
 
   updateInitiative = (id, e) => {
+    // debounce function using setTimeout instead of _lodash lib
     clearTimeout(this.timeout);
-    const { value } = e.target;
-    const elements = this.state.elements;
-    const index = elements.findIndex(el => el.id === id);
-    elements[index].initiative = Number(value);
-    this.setState({ elements });
+    this.updateField(id, e, 'initiative');
     this.timeout = setTimeout(() => this.sortElements(), 500);
   };
 
@@ -68,9 +36,10 @@ class App extends Component {
   addCard = () => {
     const { elements } = this.state;
     elements[elements.length] = {
-      id: elements.length + 1,
+      // id: elements.length + 1,
+      id: randomId(),
       name: `Player ${elements.length + 1}`,
-      initiative: 12,
+      initiative: -100,
       hitpoints: 32
     };
     this.setState({
@@ -78,10 +47,17 @@ class App extends Component {
     });
   };
 
+  removeElement = id => {
+    let { elements } = this.state;
+    elements = elements.filter(el => el.id !== id);
+    this.setState({ elements });
+  };
+
   render() {
     const { elements } = this.state;
     return (
       <div className="container">
+        <h1>Dungeons & Dragons Turn Tracker</h1>
         <button onClick={this.addCard}>add</button>
         {elements.map(element => (
           <Card
@@ -90,9 +66,9 @@ class App extends Component {
             id={element.id}
             initiative={element.initiative}
             hitpoints={element.hitpoints}
-            onNameChange={this.updateName}
             onInitiativeChange={this.updateInitiative}
-            onHitpointsChange={this.updateHitpoints}
+            onUpdateField={this.updateField}
+            onRemove={this.removeElement}
           />
         ))}
       </div>
